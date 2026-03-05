@@ -1,0 +1,29 @@
+[project]
+name = "nanokvm"
+version = "0.1.0"
+description = "Python library for controlling machines via NanoKVM-USB — serial HID + UVC video capture for AI agents"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "GPL-3.0-or-later"
+dependencies = [
+    "pyserial>=3.5",
+    "opencv-python>=4.8",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+    "pyright>=1.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+venvPath = "."
+venv = ".venv"
