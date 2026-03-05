@@ -4,12 +4,19 @@ version = "0.1.0"
 description = "Python library for controlling machines via NanoKVM-USB — serial HID + UVC video capture for AI agents"
 readme = "README.md"
 requires-python = ">=3.12"
-license = "GPL-3.0-or-later"
+license = "MIT"
 dependencies = [
     "pyserial>=3.5",
     "opencv-python>=4.8",
     "numpy>=1.26",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Sipeed/NanoKVM-USB-python-lib"
+Repository = "https://github.com/Sipeed/NanoKVM-USB-python-lib"
+
+[project.scripts]
+nanokvm = "nanokvm.__main__:main"
 
 [project.optional-dependencies]
 dev = [
