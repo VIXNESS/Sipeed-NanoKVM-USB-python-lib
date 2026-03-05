@@ -32,6 +32,18 @@ Or with [uv](https://docs.astral.sh/uv/):
 uv pip install git+https://github.com/Sipeed/NanoKVM-USB-python-lib.git
 ```
 
+To add as a dependency to an existing uv project:
+
+```bash
+uv add nanokvm --git https://github.com/Sipeed/NanoKVM-USB-python-lib.git
+```
+
+Or pin to a specific version tag:
+
+```bash
+uv add nanokvm --git https://github.com/Sipeed/NanoKVM-USB-python-lib.git --tag v0.1.1
+```
+
 For local development:
 
 ```bash
