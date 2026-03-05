@@ -21,7 +21,7 @@ kvm.connect()
 # --- Screen recording setup ---
 width, height = kvm.get_video_resolution()
 fps = 30
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+fourcc = cv2.VideoWriter.fourcc(*"mp4v")
 writer = cv2.VideoWriter("recording.mp4", fourcc, fps, (width, height))
 stop_event = threading.Event()
 
