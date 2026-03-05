@@ -74,12 +74,12 @@ class VideoCapture:
         if not ret or frame is None:
             raise ConnectionError("Failed to read frame from video device")
 
-        return frame
+        return np.asarray(frame, dtype=np.uint8)
 
     def read_frame_rgb(self) -> NDArray[np.uint8]:
         """Capture a frame and convert BGR -> RGB."""
         frame = self.read_frame()
-        return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        return np.asarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), dtype=np.uint8)
 
     def read_frame_jpeg(self, quality: int = 85) -> bytes:
         """
