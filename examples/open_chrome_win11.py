@@ -61,11 +61,11 @@ positions = [
 
 for name, x, y in positions:
     print(f"Moving mouse to {name} ({x}, {y})")
-    kvm.mouse_move(x, y)
+    kvm.mouse_move_to(x, y)
     time.sleep(1.0)
 
-# --- Left click at center ---
-kvm.mouse_click(x=0.5, y=0.5)
+# --- Left click in place (mouse is already at center) ---
+kvm.mouse_click()
 time.sleep(1.0)
 
 # --- Stop recording and save ---

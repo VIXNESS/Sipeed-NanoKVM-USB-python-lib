@@ -261,16 +261,52 @@ class NanoKVM:
         time.sleep(interval)
         self.mouse_click(x, y, button)
 
-    def mouse_move_relative(self, dx: int, dy: int) -> None:
+    def mouse_move_relative(self, dx: int, dy: int, step_delay: float = 0.005) -> None:
         """
         Move the mouse by a relative offset.
 
+        Accepts any integer distance; large moves are automatically split
+        into multiple -127/+127 HID reports.
+
         Args:
-            dx: Horizontal movement (-127 to 127).
-            dy: Vertical movement (-127 to 127).
+            dx: Horizontal movement in pixels (any integer).
+            dy: Vertical movement in pixels (any integer).
+            step_delay: Seconds between chunked reports.
         """
-        report = build_relative_report(dx=dx, dy=dy, buttons=self._buttons)
-        self._send_mouse(report)
+        while dx != 0 or dy != 0:
+            chunk_x = max(-127, min(127, dx))
+            chunk_y = max(-127, min(127, dy))
+            report = build_relative_report(dx=chunk_x, dy=chunk_y, buttons=self._buttons)
+            self._send_mouse(report)
+            dx -= chunk_x
+            dy -= chunk_y
+            if dx != 0 or dy != 0:
+                time.sleep(step_delay)
+
+    def mouse_move_to(
+        self,
+        x: float,
+        y: float,
+        screen_width: int = 1920,
+        screen_height: int = 1080,
+    ) -> None:
+        """
+        Move the mouse to a screen position using relative mode.
+
+        Works by first resetting the cursor to the top-left corner, then
+        moving to the target pixel position. Use this when absolute mode
+        fails at screen edges.
+
+        Args:
+            x: Normalized X position (0.0 = left, 1.0 = right).
+            y: Normalized Y position (0.0 = top, 1.0 = bottom).
+            screen_width: Target screen width in pixels.
+            screen_height: Target screen height in pixels.
+        """
+        self.mouse_move_relative(-screen_width * 2, -screen_height * 2)
+        target_x = int(x * screen_width)
+        target_y = int(y * screen_height)
+        self.mouse_move_relative(target_x, target_y)
 
     def mouse_scroll(self, delta: int) -> None:
         """
