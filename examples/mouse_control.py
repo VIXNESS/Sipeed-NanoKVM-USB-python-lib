@@ -12,14 +12,88 @@ Relative mode:
 
 Usage:
     python examples/mouse_control.py --port /dev/ttyACM0
+    python examples/mouse_control.py --port /dev/ttyACM0 --video 0 --record
+    python examples/mouse_control.py --port /dev/ttyACM0 --video 0 --record --output my_recording.mp4
 """
 
+from __future__ import annotations
+
 import argparse
+import threading
 import time
+from datetime import datetime
+
+import cv2
 
 from nanokvm import NanoKVM
 
 PAUSE = 0.8
+
+
+class ScreenRecorder:
+    """Records KVM screen output to a video file in a background thread."""
+
+    def __init__(self, kvm: NanoKVM, output_path: str, fps: float = 10) -> None:
+        self._kvm = kvm
+        self._output_path = output_path
+        self._fps = fps
+        self._stop = threading.Event()
+        self._thread: threading.Thread | None = None
+        self._frame_count = 0
+
+    @property
+    def frame_count(self) -> int:
+        return self._frame_count
+
+    def start(self) -> None:
+        self._stop.clear()
+        self._frame_count = 0
+        self._thread = threading.Thread(target=self._record_loop, daemon=True)
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        if self._thread is not None:
+            self._thread.join(timeout=5)
+
+    def _record_loop(self) -> None:
+        writer: cv2.VideoWriter | None = None
+        interval = 1.0 / self._fps
+
+        try:
+            while not self._stop.is_set():
+                t0 = time.monotonic()
+                try:
+                    frame = self._kvm.capture_frame()
+                except Exception:
+                    self._stop.wait(interval)
+                    continue
+
+                if writer is None:
+                    h, w = frame.shape[:2]
+                    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+                    writer = cv2.VideoWriter(self._output_path, fourcc, self._fps, (w, h))
+                    if not writer.isOpened():
+                        print(f"  [recorder] Failed to open VideoWriter for {self._output_path}")
+                        return
+
+                writer.write(frame)
+                self._frame_count += 1
+
+                elapsed = time.monotonic() - t0
+                remaining = interval - elapsed
+                if remaining > 0:
+                    self._stop.wait(remaining)
+        finally:
+            if writer is not None:
+                writer.release()
+
+    def __enter__(self) -> ScreenRecorder:
+        self.start()
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        self.stop()
 
 
 def test_absolute_mode(kvm: NanoKVM) -> None:
@@ -123,19 +197,37 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="NanoKVM mouse control test")
     parser.add_argument("--port", default="/dev/ttyACM0", help="Serial port")
     parser.add_argument("--video", type=int, default=None, help="Video device index (optional)")
+    parser.add_argument("--record", action="store_true", help="Record the KVM screen during tests")
+    parser.add_argument("--output", default=None, help="Output video file path (default: recording_<timestamp>.mp4)")
+    parser.add_argument("--record-fps", type=float, default=10, help="Recording frame rate (default: 10)")
     args = parser.parse_args()
+
+    if args.record and args.video is None:
+        parser.error("--record requires --video to be set")
+
+    if args.record and args.output is None:
+        args.output = f"recording_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp4"
 
     kvm = NanoKVM(serial_port=args.port, video_device=args.video)
     kvm.connect()
     print(f"Connected: {kvm}")
 
+    recorder: ScreenRecorder | None = None
     try:
+        if args.record:
+            recorder = ScreenRecorder(kvm, args.output, fps=args.record_fps)
+            recorder.start()
+            print(f"Recording started -> {args.output}")
+
         test_absolute_mode(kvm)
         test_relative_mode(kvm)
         test_relative_move_to(kvm)
         test_scroll(kvm)
         print("All mouse tests completed.")
     finally:
+        if recorder is not None:
+            recorder.stop()
+            print(f"Recording saved: {args.output} ({recorder.frame_count} frames)")
         kvm.mouse_reset()
         kvm.disconnect()
         print("Disconnected.")
