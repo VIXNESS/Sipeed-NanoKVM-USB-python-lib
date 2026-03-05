@@ -20,15 +20,24 @@ The NanoKVM-USB exposes two USB interfaces to the host:
 
 ## Install
 
+Install directly from GitHub:
+
 ```bash
-cd python-lib
-uv pip install -e .
+pip install git+https://github.com/Sipeed/NanoKVM-USB-python-lib.git
 ```
 
-Or with pip:
+Or with [uv](https://docs.astral.sh/uv/):
 
 ```bash
-pip install pyserial opencv-python numpy
+uv pip install git+https://github.com/Sipeed/NanoKVM-USB-python-lib.git
+```
+
+For local development:
+
+```bash
+git clone https://github.com/Sipeed/NanoKVM-USB-python-lib.git
+cd NanoKVM-USB-python-lib
+uv pip install -e ".[dev]"
 ```
 
 ## Quick Start
@@ -132,6 +141,10 @@ for dev in VideoCapture.list_devices():
     print(f"Index {dev['index']}: {dev['width']}x{dev['height']} @ {dev['fps']}fps")
 ```
 
+## Documentation
+
+For the full API reference covering all classes, methods, parameters, key maps, and HID protocol details, see [docs/API.md](docs/API.md).
+
 ## AI Agent Example
 
 See [`examples/ai_agent_loop.py`](examples/ai_agent_loop.py) for a complete observe-act loop pattern.
@@ -144,4 +157,4 @@ See [`examples/ai_agent_loop.py`](examples/ai_agent_loop.py) for a complete obse
 
 ## License
 
-GPL-3.0 (same as the NanoKVM-USB project)
+[MIT](LICENSE)

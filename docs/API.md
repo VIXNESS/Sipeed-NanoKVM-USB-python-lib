@@ -1,7 +1,7 @@
 # nanokvm API Reference
 
 **Version:** 0.1.0
-**License:** GPL-3.0-or-later
+**License:** MIT
 **Python:** >= 3.12
 
 Python library for controlling machines via NanoKVM-USB — serial HID keyboard/mouse control + UVC video capture, designed for AI agent integration.
