@@ -71,10 +71,14 @@ class ScreenRecorder:
 
                 if writer is None:
                     h, w = frame.shape[:2]
-                    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-                    writer = cv2.VideoWriter(self._output_path, fourcc, self._fps, (w, h))
+                    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore[reportAttributeAccessIssue]
+                    writer = cv2.VideoWriter(
+                        self._output_path, fourcc, self._fps, (w, h)
+                    )
                     if not writer.isOpened():
-                        print(f"  [recorder] Failed to open VideoWriter for {self._output_path}")
+                        print(
+                            f"  [recorder] Failed to open VideoWriter for {self._output_path}"
+                        )
                         return
 
                 writer.write(frame)
@@ -102,11 +106,11 @@ def test_absolute_mode(kvm: NanoKVM) -> None:
     print("Moving cursor to five positions (corners + center)...\n")
 
     positions = [
-        ("top-left",     0.05, 0.05),
-        ("top-right",    0.95, 0.05),
+        ("top-left", 0.05, 0.05),
+        ("top-right", 0.95, 0.05),
         ("bottom-right", 0.95, 0.95),
-        ("bottom-left",  0.05, 0.95),
-        ("center",       0.50, 0.50),
+        ("bottom-left", 0.05, 0.95),
+        ("center", 0.50, 0.50),
     ]
 
     for name, x, y in positions:
@@ -157,11 +161,11 @@ def test_relative_move_to(kvm: NanoKVM) -> None:
     print("Visits corners using reset-to-origin + relative movement.\n")
 
     positions = [
-        ("top-left",     0.0, 0.0),
-        ("top-right",    1.0, 0.0),
+        ("top-left", 0.0, 0.0),
+        ("top-right", 1.0, 0.0),
         ("bottom-right", 1.0, 1.0),
-        ("bottom-left",  0.0, 1.0),
-        ("center",       0.5, 0.5),
+        ("bottom-left", 0.0, 1.0),
+        ("center", 0.5, 0.5),
     ]
 
     for name, x, y in positions:
@@ -196,10 +200,23 @@ def test_scroll(kvm: NanoKVM) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="NanoKVM mouse control test")
     parser.add_argument("--port", default="/dev/ttyACM0", help="Serial port")
-    parser.add_argument("--video", type=int, default=None, help="Video device index (optional)")
-    parser.add_argument("--record", action="store_true", help="Record the KVM screen during tests")
-    parser.add_argument("--output", default=None, help="Output video file path (default: recording_<timestamp>.mp4)")
-    parser.add_argument("--record-fps", type=float, default=10, help="Recording frame rate (default: 10)")
+    parser.add_argument(
+        "--video", type=int, default=None, help="Video device index (optional)"
+    )
+    parser.add_argument(
+        "--record", action="store_true", help="Record the KVM screen during tests"
+    )
+    parser.add_argument(
+        "--output",
+        default=None,
+        help="Output video file path (default: recording_<timestamp>.mp4)",
+    )
+    parser.add_argument(
+        "--record-fps",
+        type=float,
+        default=10,
+        help="Recording frame rate (default: 10)",
+    )
     args = parser.parse_args()
 
     if args.record and args.video is None:

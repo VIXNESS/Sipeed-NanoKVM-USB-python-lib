@@ -52,11 +52,11 @@ time.sleep(3.0)
 
 # --- Move mouse to each corner and center ---
 positions = [
-    ("top-left",     0.0, 0.0),
-    ("top-right",    1.0, 0.0),
+    ("top-left", 0.0, 0.0),
+    ("top-right", 1.0, 0.0),
     ("bottom-right", 1.0, 1.0),
-    ("bottom-left",  0.0, 1.0),
-    ("center",       0.5, 0.5),
+    ("bottom-left", 0.0, 1.0),
+    ("center", 0.5, 0.5),
 ]
 
 for name, x, y in positions:
