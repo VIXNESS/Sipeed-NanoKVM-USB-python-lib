@@ -26,7 +26,7 @@ from .protocol import CmdEvent, CmdPacket, InfoPacket
 from .serial_conn import SerialConnection
 from .video import VideoCapture
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __all__ = [
     "NanoKVM",
