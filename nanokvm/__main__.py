@@ -1,26 +1,29 @@
 """Quick CLI to list available NanoKVM devices and test connectivity."""
 
 from nanokvm import SerialConnection, VideoCapture
+from nanokvm._logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def main() -> None:
-    print("=== Available Serial Ports ===")
+    logger.info("=== Available Serial Ports ===")
     ports = SerialConnection.list_ports()
     if ports:
         for p in ports:
-            print(f"  {p.device}: {p.description} [{p.hwid}]")
+            logger.info(f"  {p.device}: {p.description} [{p.hwid}]")
     else:
-        print("  (none found)")
+        logger.info("  (none found)")
 
-    print("\n=== Available Video Devices ===")
+    logger.info("\n=== Available Video Devices ===")
     devices = VideoCapture.list_devices()
     if devices:
         for d in devices:
-            print(
+            logger.info(
                 f"  Index {d['index']}: {d['width']}x{d['height']} @ {d['fps']}fps ({d['backend']})"
             )
     else:
-        print("  (none found)")
+        logger.info("  (none found)")
 
 
 if __name__ == "__main__":

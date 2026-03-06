@@ -1,6 +1,6 @@
 # nanokvm API Reference
 
-**Version:** 0.1.2
+**Version:** 0.1.3
 **License:** MIT
 **Python:** >= 3.12
 
