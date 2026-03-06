@@ -92,7 +92,9 @@ class NanoKVM:
             info = self.get_info()
 
         if vdev is not None:
-            self._video.open(vdev, self._video_width, self._video_height, self._video_fps)
+            self._video.open(
+                vdev, self._video_width, self._video_height, self._video_fps
+            )
 
         return info
 
@@ -198,7 +200,11 @@ class NanoKVM:
     # ------------------------------------------------------------------
 
     def _send_mouse(self, report: list[int]) -> None:
-        pkt_cmd = CmdEvent.SEND_MS_REL_DATA if report[0] == 0x01 else CmdEvent.SEND_MS_ABS_DATA
+        pkt_cmd = (
+            CmdEvent.SEND_MS_REL_DATA
+            if report[0] == 0x01
+            else CmdEvent.SEND_MS_ABS_DATA
+        )
         pkt = CmdPacket(addr=self._addr, cmd=pkt_cmd, data=report)
         self._serial.write(pkt.encode())
 
@@ -275,7 +281,9 @@ class NanoKVM:
         while dx != 0 or dy != 0:
             chunk_x = max(-127, min(127, dx))
             chunk_y = max(-127, min(127, dy))
-            report = build_relative_report(dx=chunk_x, dy=chunk_y, buttons=self._buttons)
+            report = build_relative_report(
+                dx=chunk_x, dy=chunk_y, buttons=self._buttons
+            )
             self._send_mouse(report)
             dx -= chunk_x
             dy -= chunk_y

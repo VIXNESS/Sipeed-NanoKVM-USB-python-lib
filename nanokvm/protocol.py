@@ -59,7 +59,9 @@ class CmdPacket:
         data_len = data[header_idx + 4]
 
         if remaining < 5 + data_len + 1:
-            raise ValueError(f"Packet truncated: need {5 + data_len + 1}, have {remaining}")
+            raise ValueError(
+                f"Packet truncated: need {5 + data_len + 1}, have {remaining}"
+            )
 
         checksum = data[header_idx + 5 + data_len]
 
@@ -69,7 +71,9 @@ class CmdPacket:
         expected &= 0xFF
 
         if expected != checksum:
-            raise ValueError(f"Checksum mismatch: expected 0x{expected:02X}, got 0x{checksum:02X}")
+            raise ValueError(
+                f"Checksum mismatch: expected 0x{expected:02X}, got 0x{checksum:02X}"
+            )
 
         payload = data[header_idx + 5 : header_idx + 5 + data_len]
         return cls(addr=addr, cmd=cmd, data=payload)

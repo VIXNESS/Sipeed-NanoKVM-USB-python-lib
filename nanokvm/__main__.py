@@ -16,7 +16,9 @@ def main() -> None:
     devices = VideoCapture.list_devices()
     if devices:
         for d in devices:
-            print(f"  Index {d['index']}: {d['width']}x{d['height']} @ {d['fps']}fps ({d['backend']})")
+            print(
+                f"  Index {d['index']}: {d['width']}x{d['height']} @ {d['fps']}fps ({d['backend']})"
+            )
     else:
         print("  (none found)")
 
