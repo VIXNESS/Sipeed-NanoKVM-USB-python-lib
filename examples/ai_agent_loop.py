@@ -7,7 +7,6 @@ Replace the `ask_llm()` function with your actual LLM call.
 
 from __future__ import annotations
 
-import json
 import time
 
 from nanokvm import NanoKVM
