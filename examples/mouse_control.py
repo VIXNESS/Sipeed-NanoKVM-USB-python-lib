@@ -71,7 +71,7 @@ class ScreenRecorder:
 
                 if writer is None:
                     h, w = frame.shape[:2]
-                    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+                    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore[reportAttributeAccessIssue]
                     writer = cv2.VideoWriter(
                         self._output_path, fourcc, self._fps, (w, h)
                     )
