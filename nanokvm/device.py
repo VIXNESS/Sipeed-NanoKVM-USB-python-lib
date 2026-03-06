@@ -9,9 +9,8 @@ from __future__ import annotations
 
 import time
 
-from .keyboard import KeyboardReport, is_modifier, resolve_key_code
+from .keyboard import KeyboardReport, resolve_key_code
 from .mouse import (
-    MouseButton,
     build_absolute_report,
     build_relative_report,
     resolve_button,
