@@ -1,6 +1,6 @@
 [project]
 name = "nanokvm"
-version = "0.1.2"
+version = "0.1.3"
 description = "Python library for controlling machines via NanoKVM-USB — serial HID + UVC video capture for AI agents"
 readme = "README.md"
 requires-python = ">=3.12"
